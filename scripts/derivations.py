@@ -13,7 +13,7 @@ from gen.AlgaLexer import AlgaLexer
 from gen.AlgaParser import AlgaParser
 from semantic.errors import DiagnosticListener
 
-GRAMMAR = json.loads((ROOT / 'docs/glc.json').read_text(encoding='utf-8'))
+GRAMMAR = json.loads((ROOT / 'derivaciones/glc.json').read_text(encoding='utf-8'))
 RULES = {
     'S': 's', 'L': 'l', 'stmt': 'stmt', 'D': 'd', 'J': 'j',
     'A': 'a', 'As': 'asig', 'Ref': 'ref', 'U': 'u', 'U1': 'u1',
@@ -109,7 +109,7 @@ def derive(tree):
 
 
 def documents():
-    examples = json.loads((ROOT / 'docs/ejemplos_informe.json').read_text(encoding='utf-8'))
+    examples = json.loads((ROOT / 'derivaciones/ejemplos_informe.json').read_text(encoding='utf-8'))
     # Cuatro por construcción; incluyen inicialización, signos, llamadas y else.
     chosen = {'declaraciones': [0, 1, 3, 4], 'asignaciones': [0, 2, 3, 4],
               'expresiones': [0, 1, 2, 4], 'selectivas': [0, 2, 3, 4], 'iterativas_while': [0, 1, 3, 4], 'iterativas_for': [0, 1, 2, 3]}
@@ -130,7 +130,7 @@ def documents():
             parts.extend([f'## Ejemplo {number}\n', f'```text\n{source}\n```\n',
                           'Lexemas en orden: `' + ' '.join(f'{s}={v}' for s, v in tokens if s in {'id','num','string'}) + '`\n',
                           '```text\n' + '\n'.join(f'{i:02}. {" ".join(form) or "ε"}    [{rule}]' for i,(rule,form) in enumerate(steps)) + '\n```\n'])
-        yield ROOT / f'docs/04_derivaciones/{index:02}_{name}.md', '\n'.join(parts)
+        yield ROOT / f'derivaciones/04_derivaciones/{index:02}_{name}.md', '\n'.join(parts)
 
 
 def main():
