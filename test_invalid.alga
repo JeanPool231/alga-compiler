@@ -1,0 +1,107 @@
+matrix A[2][2] = [[4,1],[2,3]];
+matrix rectangular[2][3] = [[1,2,3],[4,5,6]];
+vector b[2] = [1,2];
+vector v[3] = [1,2,3];
+scalar i = 0;
+scalar j = 0;
+scalar k = 2;
+scalar suma = 0;
+
+print("Inicio del ejemplo con errores semanticos");
+
+destinoNoDeclarado = 5;
+scalar lectura = origenNoDeclarado + 1;
+scalar autorreferencia = autorreferencia + 1;
+scalar k = 9;
+
+vector corto[3] = [1,2];
+matrix formaIncorrecta[2][2] = [[1,2,3],[4,5,6]];
+matrix irregular[2][2] = [[1,2],[3]];
+vector dimensionCero[0];
+matrix dimensionDecimal[2.5][2];
+
+scalar texto = "Esto no es un escalar";
+scalar vectorComoEscalar = [1,2];
+scalar retornoPrint = print("print no devuelve un valor asignable");
+v = 7;
+k = A;
+b = v;
+
+A + rectangular;
+A * rectangular + A;
+rectangular * A;
+v * b;
+2 / v;
+"texto" + 1;
+-"texto";
+
+det(rectangular);
+trace(v);
+transpose(k);
+norm(A);
+rows(v);
+cols(k);
+isSymmetric(v);
+solve(A,v);
+solve(A);
+det(A,A);
+funcionInexistente(A);
+print(print("Llamada interna sin valor"));
+
+v[3] = 0;
+v[-1] = 0;
+v[1.5] = 0;
+v["indice"] = 0;
+v[indiceNoDeclarado] = 0;
+v[0][1] = 0;
+A[0] = 0;
+A[0][2] = 0;
+k[0] = 0;
+v[0] = [1,2];
+A[0][0] = "incompatible";
+
+if (k) {
+    print("Una condicion requiere bool");
+}
+
+if (v == b) {
+    print("No se comparan vectores con este operador");
+} else {
+    print("El analisis tambien recorre esta rama");
+}
+
+if (1 < 2) {
+    scalar local = 10;
+    print(local);
+}
+print(local);
+
+while (1) {
+    scalar temporal = 2;
+    temporal = [1,2];
+}
+print(temporal);
+
+for (contador = 0; i < 2; i = i + 1) {
+    suma = suma + b[i];
+}
+
+for (i = 0; i < 2; i = paso) {
+    scalar paso = 1;
+    print(paso);
+}
+
+for (j = 0; j < 2; j = j + 1) {
+    vector j[2] = [0,0];
+    j = 1;
+}
+
+if (isSymmetric(A)) {
+    vector dentro[2] = [1,2];
+    dentro = A;
+} else {
+    print(dentro);
+}
+
+print("Este final permite comprobar que el analisis continua");
+errorAlFinal = 99;

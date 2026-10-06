@@ -108,10 +108,18 @@ el análisis posterior utiliza Python y su runtime de ANTLR.
 
 ## Uso
 
-Con el entorno virtual activo, analiza el ejemplo principal:
+Con el entorno virtual activo y los analizadores generados, puedes analizar
+un archivo individual sin configurar `PYTHONPATH`:
 
 ```bash
-PYTHONPATH=src python3 -m alga.driver examples/01_validos/05_demo.alga
+python3 main.py test.txt
+```
+
+Crea `test.txt` con código Alga o sustituye la ruta por tu archivo. También
+puedes analizar el ejemplo incluido:
+
+```bash
+python3 main.py examples/01_validos/05_demo.alga
 ```
 
 Si no encuentra errores, muestra:
@@ -120,27 +128,37 @@ Si no encuentra errores, muestra:
 OK: fase semantic; análisis estático completado
 ```
 
-`PYTHONPATH=src` permite importar el paquete `alga`. El repositorio no incluye
-`pyproject.toml` ni `setup.py`: instalar `requirements.txt` no instala el proyecto
-como paquete. Ejecuta el CLI con `-m alga.driver`, como en los ejemplos.
+`main.py` localiza `src/` respecto a su propia ubicación y llama al mismo driver.
+Acepta archivos `.alga`, `.txt` o de cualquier extensión con contenido UTF-8.
+Las rutas relativas de entrada se interpretan desde el directorio actual.
+
+La entrada como módulo sigue disponible:
+
+```bash
+PYTHONPATH=src python3 -m alga.driver examples/01_validos/05_demo.alga
+```
+
+Solo esta forma y las pruebas que importan `alga` necesitan `PYTHONPATH=src`.
+El repositorio no incluye `pyproject.toml` ni `setup.py`: instalar
+`requirements.txt` no instala el proyecto como paquete.
 
 ### Fases y salida JSON
 
 ```bash
 # Mostrar tokens, lexemas, líneas y columnas.
-PYTHONPATH=src python3 -m alga.driver examples/01_validos/05_demo.alga --phase lex
+python3 main.py examples/01_validos/05_demo.alga --phase lex
 
 # Mostrar el árbol sintáctico si no hay errores.
-PYTHONPATH=src python3 -m alga.driver examples/01_validos/05_demo.alga --phase parse
+python3 main.py examples/01_validos/05_demo.alga --phase parse
 
 # Comprobar también tipos, dimensiones y ámbitos (fase predeterminada).
-PYTHONPATH=src python3 -m alga.driver examples/01_validos/05_demo.alga --phase semantic
+python3 main.py examples/01_validos/05_demo.alga --phase semantic
 
 # Obtener tokens, errores y árbol en JSON.
-PYTHONPATH=src python3 -m alga.driver examples/01_validos/05_demo.alga --json
+python3 main.py examples/01_validos/05_demo.alga --json
 
 # Consultar las opciones.
-PYTHONPATH=src python3 -m alga.driver --help
+python3 main.py --help
 ```
 
 Las fases se ejecutan en orden: léxico → sintáctico → semántico. Si una fase
@@ -172,7 +190,7 @@ error incluso con `--json`.
 Ejemplo de validación de un método numérico:
 
 ```bash
-PYTHONPATH=src python3 -m alga.driver examples/05_metodos_numericos/01_jacobi.alga
+python3 main.py examples/05_metodos_numericos/01_jacobi.alga
 ```
 
 Las declaraciones, asignaciones y expresiones terminan en `;`. Los bloques de
@@ -220,10 +238,24 @@ Este último comando sobrescribe los Markdown de derivaciones usando
 `docs/glc.json` y `docs/ejemplos_informe.json`. Su verificador documental es
 independiente del parser ANTLR y no sustituye las pruebas de integración.
 
+Los archivos `.alga` son texto UTF-8: la extensión identifica el lenguaje, pero
+el CLI también acepta `.txt`. Si renombras casos existentes, actualiza sus
+rutas en `examples/casos.json` y los patrones `*.alga` de las pruebas.
+
+El verificador de derivaciones sustituye en cada paso el primer no terminal,
+comprueba que la producción exista y compara la cadena terminal final con los
+tokens originales. `--check` compara además las derivaciones regeneradas con
+los Markdown guardados. Ejecútalo sin `python -O`, pues utiliza `assert`.
+El árbol mostrado por `--phase parse` no es una lista de pasos de derivación.
+
+Consulta la [revisión del Hito 1](docs/revision_hito1.md) para el contraste con
+el PDF de requisitos y el DOCX, las pruebas realizadas y los pendientes de entrega.
+
 ## Estructura y scripts auxiliares
 
 | Ruta | Contenido |
 | --- | --- |
+| `main.py` | Entrada directa para analizar un archivo sin configurar `PYTHONPATH`. |
 | `grammar/` | Gramáticas ANTLR del lexer y parser. |
 | `src/alga/driver.py` | CLI y coordinación de las fases. |
 | `src/alga/semantic.py` | Visitor semántico y ámbitos de variables. |
@@ -246,9 +278,11 @@ necesitan para funcionar:
   bibliotecas del sistema Cairo, Pango, Pangocairo y GObject. Escribe
   `entregables/12_cambios_docx_iteraciones.pdf`.
 - `python3 scripts/package.py`: intenta crear `dist/alga_hito1.zip`, pero exige
-  archivos de raíz que no están incluidos: `.gitignore`,
-  `Teoria_de_Compiladores_Trabajo_Parcial_y_Final.pdf` y
-  `Grupo 2 Trabajo Parcial Compiladores(1).docx`. Hasta restaurarlos o adaptar
+  archivos de raíz que no están incluidos con los nombres esperados: `.gitignore`
+  y `Teoria_de_Compiladores_Trabajo_Parcial_y_Final.pdf`. El PDF disponible se
+  llama `Teoria_de_Compiladores_Trabajo_Parcial_y_Final-1.pdf`; el DOCX
+  `Grupo 2 Trabajo Parcial Compiladores(1).docx` ya está presente. Hasta restaurar
+  las entradas faltantes o adaptar
   su lista `ROOT_FILES`, falla. El ZIP excluye el código `generated`, los
   entornos virtuales y el JAR de `tools/`; quien lo reciba deberá preparar
   ANTLR y generar los analizadores nuevamente.
@@ -262,12 +296,14 @@ ausente en esta copia; la GLC disponible está en `docs/glc.json`.
 | --- | --- |
 | `Se requiere Java y ANTLR 4.13.2` | Verifica `java -version`, el JAR en `tools/` y cualquier valor de `ANTLR_JAR`. |
 | `No module named antlr4` | Activa `.venv` e instala `requirements.txt` con el mismo intérprete que ejecutará el CLI. |
-| `No module named alga` | Ejecuta desde la raíz con `PYTHONPATH=src`. |
+| `No module named alga` | Usa `python3 main.py archivo` o, para ejecutar como módulo, configura `PYTHONPATH=src`. |
 | `No module named alga.generated` | Ejecuta `python3 scripts/generate.py` antes del CLI y de las pruebas de integración. |
 | Error de versión entre ANTLR y el runtime | Usa el JAR 4.13.2, reinstala los requisitos y regenera los analizadores. |
 | `externally-managed-environment` al instalar con pip | Crea y activa `.venv` antes de instalar las dependencias. |
 | No se puede crear `.venv` o falta `ensurepip` | Instala el soporte `venv` correspondiente a tu Python según tu distribución. |
 | El programa muestra `OK` pero no imprime cálculos | Es el comportamiento esperado: esta entrega solo realiza análisis estático. |
 
-En una nueva terminal, vuelve a ejecutar `source .venv/bin/activate` y conserva
-`PYTHONPATH=src` en los comandos. Para salir del entorno virtual, usa `deactivate`.
+En una nueva terminal, vuelve a ejecutar `source .venv/bin/activate`.
+`python3 main.py archivo` no necesita `PYTHONPATH`; consérvalo en los comandos
+indicados para pruebas o ejecución como módulo. Para salir del entorno virtual,
+usa `deactivate`.

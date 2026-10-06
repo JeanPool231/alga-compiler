@@ -1,0 +1,111 @@
+matrix A[3][3] = [[4,1,0],[1,5,1],[0,1,6]];
+matrix identidad[3][3] = [[1,0,0],[0,1,0],[0,0,1]];
+matrix transpuesta[3][3] = transpose(A);
+matrix producto[3][3] = A * transpuesta;
+matrix ajustada[3][3] = A + identidad * 2;
+matrix copia[3][3] = A;
+vector b[3] = [6,14,20];
+vector x[3] = [0,0,0];
+vector nuevo[3] = [0,0,0];
+vector residuo[3] = b - A * x;
+vector solucion[3];
+scalar i = 0;
+scalar j = 0;
+scalar iteraciones = 0;
+scalar maxIteraciones = 20;
+scalar tolerancia = 0.001;
+scalar error = norm(residuo);
+scalar continuar = 1;
+scalar suma = 0;
+scalar determinante = det(A);
+scalar traza = trace(A);
+scalar filas = rows(A);
+scalar columnas = cols(A);
+
+print("Inicio del ejemplo de algebra lineal");
+print(filas);
+print(columnas);
+print(traza);
+print(determinante);
+
+if (isSymmetric(A)) {
+    print("La matriz es simetrica");
+} else {
+    print("La matriz no es simetrica");
+}
+
+if (determinante != 0) {
+    solucion = solve(A,b);
+    print(solucion);
+} else {
+    print("No se puede resolver con esta matriz");
+}
+
+for (i = 0; i < 3; i = i + 1) {
+    for (j = 0; j < 3; j = j + 1) {
+        copia[i][j] = A[i][j];
+        if (i == j) {
+            copia[i][j] = copia[i][j] + 1;
+        } else {
+            copia[i][j] = copia[i][j] * 2;
+        }
+    }
+}
+
+while (continuar != 0) {
+    for (i = 0; i < 3; i = i + 1) {
+        suma = 0;
+        for (j = 0; j < 3; j = j + 1) {
+            if (i != j) {
+                suma = suma + A[i][j] * x[j];
+            }
+        }
+        nuevo[i] = (b[i] - suma) / A[i][i];
+    }
+    x = nuevo;
+    residuo = b - A * x;
+    error = norm(residuo);
+    iteraciones = iteraciones + 1;
+    if (error < tolerancia) {
+        continuar = 0;
+    }
+    if (iteraciones == maxIteraciones) {
+        continuar = 0;
+    }
+}
+
+if (error < tolerancia) {
+    scalar errorLocal = error;
+    print("Se alcanzo la tolerancia");
+    print(errorLocal);
+} else {
+    print("Se alcanzo el limite de iteraciones");
+}
+
+vector normalizado[3] = x;
+scalar longitud = norm(x);
+if (longitud > 0) {
+    normalizado = x / longitud;
+}
+
+matrix rectangular[2][3] = [[1,2,3],[4,5,6]];
+matrix rectangularT[3][2] = transpose(rectangular);
+matrix gram[2][2] = rectangular * rectangularT;
+vector proyeccion[2] = rectangular * normalizado;
+scalar balance = (trace(gram) + traza) / 2;
+scalar primerElemento = proyeccion[0];
+proyeccion[1] = proyeccion[1] + primerElemento;
+
+for (i = 2; i > -1; i = i - 1) {
+    print(x[i]);
+}
+
+print(producto);
+print(ajustada);
+print(copia);
+print(normalizado);
+print(proyeccion);
+print(balance);
+print(iteraciones);
+print(error);
+print("Fin del ejemplo");
