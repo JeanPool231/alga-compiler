@@ -1,371 +1,371 @@
 [
   {
-    "archivo": "examples/01_validos/01_declaraciones_01.alga",
+    "archivo": "examples/01_validos/01_declaraciones_01.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/01_declaraciones_02.alga",
+    "archivo": "examples/01_validos/01_declaraciones_02.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/01_declaraciones_03.alga",
+    "archivo": "examples/01_validos/01_declaraciones_03.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/01_declaraciones_04.alga",
+    "archivo": "examples/01_validos/01_declaraciones_04.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/01_declaraciones_05.alga",
+    "archivo": "examples/01_validos/01_declaraciones_05.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/02_asignaciones_01.alga",
+    "archivo": "examples/01_validos/02_asignaciones_01.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/02_asignaciones_02.alga",
+    "archivo": "examples/01_validos/02_asignaciones_02.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/02_asignaciones_03.alga",
+    "archivo": "examples/01_validos/02_asignaciones_03.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/02_asignaciones_04.alga",
+    "archivo": "examples/01_validos/02_asignaciones_04.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/02_asignaciones_05.alga",
+    "archivo": "examples/01_validos/02_asignaciones_05.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/03_expresiones_01.alga",
+    "archivo": "examples/01_validos/03_expresiones_01.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/03_expresiones_02.alga",
+    "archivo": "examples/01_validos/03_expresiones_02.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/03_expresiones_03.alga",
+    "archivo": "examples/01_validos/03_expresiones_03.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/03_expresiones_04.alga",
+    "archivo": "examples/01_validos/03_expresiones_04.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/03_expresiones_05.alga",
+    "archivo": "examples/01_validos/03_expresiones_05.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/04_selectivas_01.alga",
+    "archivo": "examples/01_validos/04_selectivas_01.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/04_selectivas_02.alga",
+    "archivo": "examples/01_validos/04_selectivas_02.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/04_selectivas_03.alga",
+    "archivo": "examples/01_validos/04_selectivas_03.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/04_selectivas_04.alga",
+    "archivo": "examples/01_validos/04_selectivas_04.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/04_selectivas_05.alga",
+    "archivo": "examples/01_validos/04_selectivas_05.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/02_errores_lexicos/caracter.alga",
+    "archivo": "examples/02_errores_lexicos/caracter.txt",
     "fase": "lex",
     "error": "token recognition error"
   },
   {
-    "archivo": "examples/02_errores_lexicos/cadena.alga",
+    "archivo": "examples/02_errores_lexicos/cadena.txt",
     "fase": "lex",
     "error": "token recognition error"
   },
   {
-    "archivo": "examples/02_errores_lexicos/escape.alga",
+    "archivo": "examples/02_errores_lexicos/escape.txt",
     "fase": "lex",
     "error": "token recognition error"
   },
   {
-    "archivo": "examples/03_errores_sintacticos/punto_coma.alga",
+    "archivo": "examples/03_errores_sintacticos/punto_coma.txt",
     "fase": "parse",
     "error": "sintáctico:"
   },
   {
-    "archivo": "examples/03_errores_sintacticos/llave.alga",
+    "archivo": "examples/03_errores_sintacticos/llave.txt",
     "fase": "parse",
     "error": "sintáctico:"
   },
   {
-    "archivo": "examples/03_errores_sintacticos/llamada_vacia.alga",
+    "archivo": "examples/03_errores_sintacticos/llamada_vacia.txt",
     "fase": "parse",
     "error": "sintáctico:"
   },
   {
-    "archivo": "examples/03_errores_sintacticos/while_sin_parentesis.alga",
+    "archivo": "examples/03_errores_sintacticos/while_sin_parentesis.txt",
     "fase": "parse",
     "error": "sintáctico:"
   },
   {
-    "archivo": "examples/03_errores_sintacticos/vector_vacio.alga",
+    "archivo": "examples/03_errores_sintacticos/vector_vacio.txt",
     "fase": "parse",
     "error": "sintáctico:"
   },
   {
-    "archivo": "examples/03_errores_sintacticos/comparacion_doble.alga",
+    "archivo": "examples/03_errores_sintacticos/comparacion_doble.txt",
     "fase": "parse",
     "error": "sintáctico:"
   },
   {
-    "archivo": "examples/04_errores_semanticos/destino_no_declarado.alga",
+    "archivo": "examples/04_errores_semanticos/destino_no_declarado.txt",
     "fase": "semantic",
     "error": "Variable k no declarada"
   },
   {
-    "archivo": "examples/04_errores_semanticos/operando_no_declarado.alga",
+    "archivo": "examples/04_errores_semanticos/operando_no_declarado.txt",
     "fase": "semantic",
     "error": "Variable x no declarada"
   },
   {
-    "archivo": "examples/04_errores_semanticos/dimension_vector.alga",
+    "archivo": "examples/04_errores_semanticos/dimension_vector.txt",
     "fase": "semantic",
     "error": "Se esperaba vector[3]; se obtuvo vector[2]"
   },
   {
-    "archivo": "examples/04_errores_semanticos/producto_matriz.alga",
+    "archivo": "examples/04_errores_semanticos/producto_matriz.txt",
     "fase": "semantic",
     "error": "Operandos incompatibles"
   },
   {
-    "archivo": "examples/04_errores_semanticos/literal_irregular.alga",
+    "archivo": "examples/04_errores_semanticos/literal_irregular.txt",
     "fase": "semantic",
     "error": "rectangular"
   },
   {
-    "archivo": "examples/04_errores_semanticos/dimension_decimal.alga",
+    "archivo": "examples/04_errores_semanticos/dimension_decimal.txt",
     "fase": "semantic",
     "error": "enteros positivos"
   },
   {
-    "archivo": "examples/04_errores_semanticos/dimension_cero.alga",
+    "archivo": "examples/04_errores_semanticos/dimension_cero.txt",
     "fase": "semantic",
     "error": "enteros positivos"
   },
   {
-    "archivo": "examples/04_errores_semanticos/ambito.alga",
+    "archivo": "examples/04_errores_semanticos/ambito.txt",
     "fase": "semantic",
     "error": "Variable k no declarada"
   },
   {
-    "archivo": "examples/04_errores_semanticos/condicion.alga",
+    "archivo": "examples/04_errores_semanticos/condicion.txt",
     "fase": "semantic",
     "error": "requiere bool"
   },
   {
-    "archivo": "examples/04_errores_semanticos/funcion.alga",
+    "archivo": "examples/04_errores_semanticos/funcion.txt",
     "fase": "semantic",
     "error": "Función desconocida no definida"
   },
   {
-    "archivo": "examples/04_errores_semanticos/aridad.alga",
+    "archivo": "examples/04_errores_semanticos/aridad.txt",
     "fase": "semantic",
     "error": "requiere 1 argumento"
   },
   {
-    "archivo": "examples/04_errores_semanticos/duplicada.alga",
+    "archivo": "examples/04_errores_semanticos/duplicada.txt",
     "fase": "semantic",
     "error": "ya declarada"
   },
   {
-    "archivo": "examples/04_errores_semanticos/tipo.alga",
+    "archivo": "examples/04_errores_semanticos/tipo.txt",
     "fase": "semantic",
     "error": "Se esperaba scalar"
   },
   {
-    "archivo": "examples/04_errores_semanticos/det_rectangular.alga",
+    "archivo": "examples/04_errores_semanticos/det_rectangular.txt",
     "fase": "semantic",
     "error": "Argumentos incompatibles"
   },
   {
-    "archivo": "examples/04_errores_semanticos/solve_dimension.alga",
+    "archivo": "examples/04_errores_semanticos/solve_dimension.txt",
     "fase": "semantic",
     "error": "Argumentos incompatibles"
   },
   {
-    "archivo": "examples/04_errores_semanticos/print_sin_valor.alga",
+    "archivo": "examples/04_errores_semanticos/print_sin_valor.txt",
     "fase": "semantic",
     "error": "Se esperaba scalar; se obtuvo void"
   },
   {
-    "archivo": "examples/04_errores_semanticos/unario_string.alga",
+    "archivo": "examples/04_errores_semanticos/unario_string.txt",
     "fase": "semantic",
     "error": "Signo unario"
   },
   {
-    "archivo": "examples/04_errores_semanticos/comparacion_vector.alga",
+    "archivo": "examples/04_errores_semanticos/comparacion_vector.txt",
     "fase": "semantic",
     "error": "comparación requiere escalares"
   },
   {
-    "archivo": "examples/03_errores_sintacticos/for_incompleto.alga",
+    "archivo": "examples/03_errores_sintacticos/for_incompleto.txt",
     "fase": "parse",
     "error": "sintáctico:"
   },
   {
-    "archivo": "examples/03_errores_sintacticos/for_declaracion_cabecera.alga",
+    "archivo": "examples/03_errores_sintacticos/for_declaracion_cabecera.txt",
     "fase": "parse",
     "error": "sintáctico:"
   },
   {
-    "archivo": "examples/03_errores_sintacticos/indexacion_triple.alga",
+    "archivo": "examples/03_errores_sintacticos/indexacion_triple.txt",
     "fase": "parse",
     "error": "sintáctico:"
   },
   {
-    "archivo": "examples/04_errores_semanticos/while_condicion.alga",
+    "archivo": "examples/04_errores_semanticos/while_condicion.txt",
     "fase": "semantic",
     "error": "requiere bool"
   },
   {
-    "archivo": "examples/04_errores_semanticos/for_contador.alga",
+    "archivo": "examples/04_errores_semanticos/for_contador.txt",
     "fase": "semantic",
     "error": "Variable i no declarada"
   },
   {
-    "archivo": "examples/04_errores_semanticos/for_ambito_actualizacion.alga",
+    "archivo": "examples/04_errores_semanticos/for_ambito_actualizacion.txt",
     "fase": "semantic",
     "error": "Variable paso no declarada"
   },
   {
-    "archivo": "examples/04_errores_semanticos/indice_tipo.alga",
+    "archivo": "examples/04_errores_semanticos/indice_tipo.txt",
     "fase": "semantic",
     "error": "requiere scalar"
   },
   {
-    "archivo": "examples/04_errores_semanticos/indice_fraccion.alga",
+    "archivo": "examples/04_errores_semanticos/indice_fraccion.txt",
     "fase": "semantic",
     "error": "debe ser entero"
   },
   {
-    "archivo": "examples/04_errores_semanticos/indice_limite.alga",
+    "archivo": "examples/04_errores_semanticos/indice_limite.txt",
     "fase": "semantic",
     "error": "fuera de rango"
   },
   {
-    "archivo": "examples/04_errores_semanticos/indice_negativo.alga",
+    "archivo": "examples/04_errores_semanticos/indice_negativo.txt",
     "fase": "semantic",
     "error": "fuera de rango"
   },
   {
-    "archivo": "examples/04_errores_semanticos/indice_cantidad.alga",
+    "archivo": "examples/04_errores_semanticos/indice_cantidad.txt",
     "fase": "semantic",
     "error": "requiere 2 índice"
   },
   {
-    "archivo": "examples/04_errores_semanticos/indice_scalar.alga",
+    "archivo": "examples/04_errores_semanticos/indice_scalar.txt",
     "fase": "semantic",
     "error": "No se puede indexar"
   },
   {
-    "archivo": "examples/04_errores_semanticos/indice_asignacion_tipo.alga",
+    "archivo": "examples/04_errores_semanticos/indice_asignacion_tipo.txt",
     "fase": "semantic",
     "error": "Se esperaba scalar"
   },
   {
-    "archivo": "examples/04_errores_semanticos/indice_no_declarado.alga",
+    "archivo": "examples/04_errores_semanticos/indice_no_declarado.txt",
     "fase": "semantic",
     "error": "Variable i no declarada"
   },
   {
-    "archivo": "examples/05_metodos_numericos/01_jacobi.alga",
+    "archivo": "examples/05_metodos_numericos/01_jacobi.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/05_metodos_numericos/02_gauss_jordan.alga",
+    "archivo": "examples/05_metodos_numericos/02_gauss_jordan.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/05_metodos_numericos/03_lu.alga",
+    "archivo": "examples/05_metodos_numericos/03_lu.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/06_while_01.alga",
+    "archivo": "examples/01_validos/06_while_01.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/06_while_02.alga",
+    "archivo": "examples/01_validos/06_while_02.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/06_while_03.alga",
+    "archivo": "examples/01_validos/06_while_03.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/06_while_04.alga",
+    "archivo": "examples/01_validos/06_while_04.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/06_while_05.alga",
+    "archivo": "examples/01_validos/06_while_05.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/06_for_01.alga",
+    "archivo": "examples/01_validos/06_for_01.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/06_for_02.alga",
+    "archivo": "examples/01_validos/06_for_02.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/06_for_03.alga",
+    "archivo": "examples/01_validos/06_for_03.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/06_for_04.alga",
+    "archivo": "examples/01_validos/06_for_04.txt",
     "fase": "semantic",
     "error": null
   },
   {
-    "archivo": "examples/01_validos/06_for_05.alga",
+    "archivo": "examples/01_validos/06_for_05.txt",
     "fase": "semantic",
     "error": null
   }

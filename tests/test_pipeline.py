@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess
 import sys
 import unittest
-from alga.driver import analyze
+from main import analyze
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -65,14 +65,14 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(analyze('scalar k = k;')['errors'])
 
     def test_demo(self):
-        source = (ROOT / 'examples/01_validos/05_demo.alga').read_text()
+        source = (ROOT / 'examples/01_validos/05_demo.txt').read_text()
         self.assertEqual(analyze(source)['errors'], [])
 
     def test_cli_exit_codes(self):
-        for filename, expected in [('examples/01_validos/05_demo.alga', 0),
-                                   ('examples/04_errores_semanticos/dimension_vector.alga', 1),
-                                   ('examples/no_existe.alga', 2)]:
-            result = subprocess.run([sys.executable, '-m', 'alga.driver', filename],
+        for filename, expected in [('examples/01_validos/05_demo.txt', 0),
+                                   ('examples/04_errores_semanticos/dimension_vector.txt', 1),
+                                   ('examples/no_existe.txt', 2)]:
+            result = subprocess.run([sys.executable, str(ROOT / 'main.py'), filename],
                                     cwd=ROOT, capture_output=True, text=True)
             self.assertEqual(result.returncode, expected, result.stderr)
 

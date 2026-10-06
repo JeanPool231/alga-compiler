@@ -1,10 +1,10 @@
 # Expresiones: cuatro derivaciones más a la izquierda
 
-GLC ampliada propuesta para el informe (ver `../03_gramatica.md`). `id`, `num` y `string` son terminales; sus lexemas se indican debajo. Cada fila sustituye un solo no terminal, siempre el situado más a la izquierda. La derivación parte del no terminal de la construcción; desde S se alcanza con `S ⇒ L ⇒ stmt L ⇒ exprstmt L` y al final `L ⇒ ε`.
+GLC del informe (ver [correspondencia con ANTLR](../03_gramatica.md)). `id`, `num` y `string` son terminales; sus lexemas se indican debajo. Cada fila sustituye un solo no terminal, siempre el situado más a la izquierda. La derivación parte del no terminal de la construcción; desde S se alcanza con `S ⇒ L ⇒ stmt L ⇒ exprstmt L` y al final `L ⇒ ε`.
 
 ## Ejemplo 1
 
-```alga
+```text
 A + B * k;
 ```
 
@@ -34,7 +34,7 @@ Lexemas en orden: `id=A id=B id=k`
 
 ## Ejemplo 2
 
-```alga
+```text
 transpose(A) * b;
 ```
 
@@ -65,7 +65,7 @@ Lexemas en orden: `id=A id=b`
 
 ## Ejemplo 3
 
-```alga
+```text
 (A - B) * (b + c);
 ```
 
@@ -111,7 +111,7 @@ Lexemas en orden: `id=A id=B id=b id=c`
 
 ## Ejemplo 4
 
-```alga
+```text
 trace(A) + k / 2.0;
 ```
 

@@ -1,5 +1,5 @@
 import unittest
-from alga.types import Type, SCALAR, STRING, BOOL, VOID, ERROR, binary, builtin
+from semantic.type_rules import Type, SCALAR, STRING, BOOL, VOID, ERROR, binary, builtin
 
 
 class TypeTests(unittest.TestCase):
@@ -57,7 +57,7 @@ class TypeTests(unittest.TestCase):
 
 class IndexTests(unittest.TestCase):
     def check_index(self, base, types, texts):
-        from alga.types import indexed
+        from semantic.type_rules import indexed
         return indexed(base, types, texts)
 
     def test_valid_literal_and_dynamic_indices(self):

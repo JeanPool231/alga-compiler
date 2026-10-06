@@ -1,10 +1,10 @@
 # Iterativas_while: cuatro derivaciones más a la izquierda
 
-GLC ampliada propuesta para el informe (ver `../03_gramatica.md`). `id`, `num` y `string` son terminales; sus lexemas se indican debajo. Cada fila sustituye un solo no terminal, siempre el situado más a la izquierda. La derivación parte del no terminal de la construcción; desde S se alcanza con `S ⇒ L ⇒ stmt L ⇒ W L` y al final `L ⇒ ε`.
+GLC del informe (ver [correspondencia con ANTLR](../03_gramatica.md)). `id`, `num` y `string` son terminales; sus lexemas se indican debajo. Cada fila sustituye un solo no terminal, siempre el situado más a la izquierda. La derivación parte del no terminal de la construcción; desde S se alcanza con `S ⇒ L ⇒ stmt L ⇒ W L` y al final `L ⇒ ε`.
 
 ## Ejemplo 1
 
-```alga
+```text
 while (i < 3) { i = i + 1; }
 ```
 
@@ -51,7 +51,7 @@ Lexemas en orden: `id=i num=3 id=i id=i num=1`
 
 ## Ejemplo 2
 
-```alga
+```text
 while (error > tol) { error = error / 2; }
 ```
 
@@ -98,7 +98,7 @@ Lexemas en orden: `id=error id=tol id=error id=error num=2`
 
 ## Ejemplo 3
 
-```alga
+```text
 while (i < 3) { v[i] = 0; i = i + 1; }
 ```
 
@@ -164,7 +164,7 @@ Lexemas en orden: `id=i num=3 id=v id=i num=0 id=i id=i num=1`
 
 ## Ejemplo 4
 
-```alga
+```text
 while (k < 10) { if (error < tol) { k = 10; } else { error = error / 2; k = k + 1; } }
 ```
 

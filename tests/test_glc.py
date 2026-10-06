@@ -1,12 +1,9 @@
-import importlib.util
 import json
 from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location('derivations', ROOT / 'scripts/derivations.py')
-glc = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(glc)
+from scripts import derivations as glc
 
 
 class GrammarDocumentationTests(unittest.TestCase):
@@ -29,12 +26,12 @@ class GrammarDocumentationTests(unittest.TestCase):
             with self.subTest(source=source), self.assertRaises(ValueError):
                 glc.parse(source)
 
-    def test_nested_conditionals_have_one_tree(self):
+    def test_nested_conditionals_parse(self):
         glc.parse('if (1 > 0) { if (2 > 1) {} else {} } else {}')
 
 
     def test_numerical_methods_parse(self):
-        for path in sorted((ROOT / 'examples/05_metodos_numericos').glob('*.alga')):
+        for path in sorted((ROOT / 'examples/05_metodos_numericos').glob('*.txt')):
             with self.subTest(path=path.name):
                 glc.parse(path.read_text())
 

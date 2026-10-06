@@ -1,10 +1,10 @@
 # Iterativas_for: cuatro derivaciones más a la izquierda
 
-GLC ampliada propuesta para el informe (ver `../03_gramatica.md`). `id`, `num` y `string` son terminales; sus lexemas se indican debajo. Cada fila sustituye un solo no terminal, siempre el situado más a la izquierda. La derivación parte del no terminal de la construcción; desde S se alcanza con `S ⇒ L ⇒ stmt L ⇒ W L` y al final `L ⇒ ε`.
+GLC del informe (ver [correspondencia con ANTLR](../03_gramatica.md)). `id`, `num` y `string` son terminales; sus lexemas se indican debajo. Cada fila sustituye un solo no terminal, siempre el situado más a la izquierda. La derivación parte del no terminal de la construcción; desde S se alcanza con `S ⇒ L ⇒ stmt L ⇒ W L` y al final `L ⇒ ε`.
 
 ## Ejemplo 1
 
-```alga
+```text
 for (i = 0; i < 3; i = i + 1) { v[i] = 0; }
 ```
 
@@ -75,7 +75,7 @@ Lexemas en orden: `id=i num=0 id=i num=3 id=i id=i num=1 id=v id=i num=0`
 
 ## Ejemplo 2
 
-```alga
+```text
 for (j = 0; j < 2; j = j + 1) { A[0][j] = A[0][j] / pivote; }
 ```
 
@@ -170,7 +170,7 @@ Lexemas en orden: `id=j num=0 id=j num=2 id=j id=j num=1 id=A num=0 id=j id=A nu
 
 ## Ejemplo 3
 
-```alga
+```text
 for (i = 0; i < 3; i = i + 1) { suma = suma + v[i]; }
 ```
 
@@ -249,7 +249,7 @@ Lexemas en orden: `id=i num=0 id=i num=3 id=i id=i num=1 id=suma id=suma id=v id
 
 ## Ejemplo 4
 
-```alga
+```text
 for (i = 0; i < 2; i = i + 1) { for (j = 0; j < 2; j = j + 1) { A[i][j] = 0; } }
 ```
 

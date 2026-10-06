@@ -30,7 +30,7 @@
   "iterativas_while": [
     "while (i < 3) { i = i + 1; }",
     "while (error > tol) { error = error / 2; }",
-    "while (k < 10) { x = x + paso; k = k + 1; }",
+    "while (norm(v) > 1) { v = v / 2; }",
     "while (i < 3) { v[i] = 0; i = i + 1; }",
     "while (k < 10) { if (error < tol) { k = 10; } else { error = error / 2; k = k + 1; } }"
   ],

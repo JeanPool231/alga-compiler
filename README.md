@@ -1,53 +1,44 @@
-# Alga Compiler
+# Alga — Hito 1
 
-Front-end de Alga (Hito 1), implementado en Python y ANTLR 4. Realiza análisis
-léxico, sintáctico y semántico de programas con escalares, vectores, matrices,
-condicionales y bucles.
+Analizador léxico, sintáctico y semántico para el lenguaje Alga, orientado a
+escalares, vectores y matrices. **Hace análisis estático:** no ejecuta bucles,
+no calcula operaciones matriciales y no imprime los argumentos de `print`.
 
-**Actualmente hace análisis estático:** no ejecuta los programas `.alga`, no
-calcula resultados numéricos ni genera ejecutables. Una llamada a `print` en
-Alga se valida, pero no imprime su argumento.
+La estructura sigue el laboratorio de MiniLang en
+`clases/Ejemplo1 (1)/Ejemplo1/`: `main.py`, analizadores generados en `gen/`,
+visitor y tabla de símbolos en `semantic/`, generación con `Makefile` y entradas
+`.txt`. La gramática sigue las producciones del DOCX actualizado.
 
 ## Requisitos
 
-Instala los siguientes paquetes del sistema, o sus equivalentes según tu
-distribución:
+Instala `python3`, `python3-pip`, Java **11 o superior** y `make`, o los paquetes
+equivalentes de tu distribución. También necesitas soporte para `venv`
+(`python3-venv` en algunas distribuciones). Los comandos siguientes usan Bash.
+`curl` solo es necesario si descargas el JAR desde la terminal.
 
-- `python3`: Python **3.9 o superior** (el código usa anotaciones como `tuple[int, ...]`).
-- `python3-pip`: gestor de dependencias de Python.
-- Java: un JRE/JDK compatible con ANTLR 4.13.2, con el comando `java` en el `PATH`.
-- Soporte para entornos virtuales (`venv`); algunas distribuciones lo separan
-  en el paquete `python3-venv`.
-- `curl`, si quieres descargar el JAR con el comando indicado más abajo.
-  También puedes descargarlo desde el navegador.
-
-Por ejemplo, en Debian/Ubuntu:
+Ejemplo para Debian/Ubuntu:
 
 ```bash
 sudo apt update
-sudo apt install python3 python3-pip python3-venv default-jre curl
+sudo apt install python3 python3-pip python3-venv default-jre make curl
 ```
 
-En otras distribuciones los nombres pueden ser `python`, `python-pip`,
-`jre-openjdk` o un paquete de OpenJDK con versión. Lo necesario es disponer de
-un intérprete Python compatible, pip, venv y Java. Si tu intérprete se llama
-`python`, adapta los comandos siguientes.
+En otras distribuciones los nombres pueden ser `python`, `python-pip` y un
+paquete de OpenJDK. Usa un Python 3 vigente; la verificación de esta revisión se
+hizo con Python 3.14, Java 17 y ANTLR 4.13.1.
 
-Comprueba la instalación:
+Comprueba las herramientas:
 
 ```bash
 python3 --version
 python3 -m pip --version
 java -version
+make --version
 ```
 
-## Instalación y generación de los analizadores
+## Preparación
 
-Ejecuta los comandos desde la **raíz del repositorio**, donde están
-`requirements.txt`, `grammar/` y `scripts/`. Los ejemplos usan Bash o una shell
-compatible en Linux.
-
-### 1. Preparar Python
+Ejecuta desde la raíz del repositorio:
 
 ```bash
 python3 -m venv .venv
@@ -55,255 +46,199 @@ source .venv/bin/activate
 python3 -m pip install -r requirements.txt
 ```
 
-La dependencia Python es `antlr4-python3-runtime==4.13.2`. Este paquete es el
-runtime que usan los analizadores generados; **no incluye el generador Java**.
-Usa el entorno virtual también al ejecutar el proyecto y las pruebas.
+Se usa **ANTLR 4.13.1**, tanto el generador Java como
+`antlr4-python3-runtime==4.13.1`, para coincidir con la guía de Semana 1.
+Si habías instalado 4.13.2 para la versión anterior del proyecto, vuelve a
+instalar los requisitos y a generar el código con 4.13.1.
 
-### 2. Colocar ANTLR en `./tools`
-
-El JAR no viene incluido. Por defecto, `scripts/generate.py` busca exactamente:
+El `Makefile` busca primero el JAR instalado como en clase:
 
 ```text
-tools/antlr-4.13.2-complete.jar
+/usr/local/lib/antlr-4.13.1-complete.jar
 ```
 
-La ruta se calcula respecto a la raíz del proyecto. Crea la carpeta y descarga
-el JAR completo de ANTLR 4.13.2:
+Si no existe, busca `tools/antlr-4.13.1-complete.jar`. Puedes prepararlo así:
 
 ```bash
 mkdir -p tools
-curl -fL https://www.antlr.org/download/antlr-4.13.2-complete.jar \
-  -o tools/antlr-4.13.2-complete.jar
+curl -fL https://www.antlr.org/download/antlr-4.13.1-complete.jar \
+  -o tools/antlr-4.13.1-complete.jar
 ```
 
-**La instalación global utilizada en los ejemplos del profesor no se detecta
-automáticamente.** El script invoca `java -jar` sobre ese archivo; no utiliza
-el comando o alias `antlr4`, `grun` ni la configuración de `CLASSPATH`.
-
-Si ya tienes el JAR **4.13.2** en otra carpeta, puedes reutilizarlo sin copiarlo
-a `tools/`, indicando su ruta mediante `ANTLR_JAR`:
+También puedes indicar otra ubicación del mismo JAR:
 
 ```bash
-ANTLR_JAR="/ruta/al/antlr-4.13.2-complete.jar" python3 scripts/generate.py
+make ANTLR_JAR=/ruta/antlr-4.13.1-complete.jar
 ```
 
-Usa la misma versión para el JAR y el runtime de Python. Cambiar solamente el
-nombre de un JAR de otra versión no lo hace compatible. Si tienes `ANTLR_JAR`
-definida, esta tiene prioridad sobre `tools/`; usa `unset ANTLR_JAR` para volver
-a la ubicación predeterminada.
+El generador usa `java -jar`, como los Makefiles del laboratorio. No depende de
+los alias `antlr4`, `grun` ni de `CLASSPATH`. La variable `ANTLR_JAR` tiene
+prioridad sobre la búsqueda automática; si apunta a una instalación anterior,
+usa `unset ANTLR_JAR` o proporciona la ruta correcta.
 
-### 3. Generar el lexer, parser y visitor
-
-Si usas la ubicación predeterminada:
+Genera los analizadores:
 
 ```bash
-python3 scripts/generate.py
+make
 ```
 
-El script procesa primero `grammar/AlgaLexer.g4` y después
-`grammar/AlgaParser.g4`, y escribe los módulos Python en `src/alga/generated/`.
-Este paso es obligatorio antes de usar el CLI o las pruebas de integración.
-Repítelo si modificas las gramáticas. Java y el JAR se necesitan para generar;
-el análisis posterior utiliza Python y su runtime de ANTLR.
+Esto procesa `grammar/AlgaLexer.g4` y `grammar/AlgaParser.g4`, y crea el lexer,
+parser y visitor en `gen/`. Repite `make` cada vez que cambies una gramática.
+No edites los módulos generados. El comando anterior
+`python3 scripts/generate.py` se conserva como acceso al mismo Makefile.
+El runtime instalado con pip no incluye el JAR.
 
-## Uso
-
-Con el entorno virtual activo y los analizadores generados, puedes analizar
-un archivo individual sin configurar `PYTHONPATH`:
+## Analizar un archivo
 
 ```bash
-python3 main.py test.txt
+python3 main.py test_valid.txt
+python3 main.py test_invalid.txt
+python3 main.py examples/01_validos/05_demo.txt
 ```
 
-Crea `test.txt` con código Alga o sustituye la ruta por tu archivo. También
-puedes analizar el ejemplo incluido:
+No necesitas `PYTHONPATH`, instalar el proyecto como paquete ni usar `-m`.
+En una nueva terminal, vuelve a activar `.venv` antes de ejecutar Python.
+La anterior entrada `python3 -m alga.driver` fue sustituida por `main.py`.
 
-```bash
-python3 main.py examples/01_validos/05_demo.alga
-```
-
-Si no encuentra errores, muestra:
+`test_valid.txt` tiene 111 líneas y debe finalizar con:
 
 ```text
 OK: fase semantic; análisis estático completado
 ```
 
-`main.py` localiza `src/` respecto a su propia ubicación y llama al mismo driver.
-Acepta archivos `.alga`, `.txt` o de cualquier extensión con contenido UTF-8.
-Las rutas relativas de entrada se interpretan desde el directorio actual.
+`test_invalid.txt` tiene 107 líneas, sintaxis válida y **57 errores semánticos
+intencionales**, incluidos errores al principio y al final. Permite comprobar
+que se reporta más de un error en la misma ejecución.
 
-La entrada como módulo sigue disponible:
+Todos los programas de evaluación se guardan como texto UTF-8 con extensión
+`.txt`. El analizador lee el contenido; no exige una extensión determinada.
+Las rutas relativas se interpretan desde el directorio donde ejecutas el comando.
 
-```bash
-PYTHONPATH=src python3 -m alga.driver examples/01_validos/05_demo.alga
-```
-
-Solo esta forma y las pruebas que importan `alga` necesitan `PYTHONPATH=src`.
-El repositorio no incluye `pyproject.toml` ni `setup.py`: instalar
-`requirements.txt` no instala el proyecto como paquete.
-
-### Fases y salida JSON
+## Fases y diagnósticos
 
 ```bash
-# Mostrar tokens, lexemas, líneas y columnas.
-python3 main.py examples/01_validos/05_demo.alga --phase lex
-
-# Mostrar el árbol sintáctico si no hay errores.
-python3 main.py examples/01_validos/05_demo.alga --phase parse
-
-# Comprobar también tipos, dimensiones y ámbitos (fase predeterminada).
-python3 main.py examples/01_validos/05_demo.alga --phase semantic
-
-# Obtener tokens, errores y árbol en JSON.
-python3 main.py examples/01_validos/05_demo.alga --json
-
-# Consultar las opciones.
+python3 main.py test_valid.txt --phase lex
+python3 main.py test_valid.txt --phase parse
+python3 main.py test_valid.txt --phase semantic
+python3 main.py test_invalid.txt --json
 python3 main.py --help
 ```
 
-Las fases se ejecutan en orden: léxico → sintáctico → semántico. Si una fase
-detecta errores, las siguientes no se ejecutan. `--json` se puede combinar con
-cualquier `--phase`; `tree` es `null` cuando no se llega a construir el árbol.
-Los archivos de entrada se leen como UTF-8.
+- `lex`: muestra tokens, lexemas y posiciones.
+- `parse`: muestra el árbol sintáctico usando los nombres de reglas del informe
+  (`s`, `l`, `d`, `e`, etc.). No muestra una derivación paso a paso.
+- `semantic`: revisa nombres, ámbitos, tipos, dimensiones y funciones. Es la
+  fase predeterminada.
+- `--json`: devuelve `tokens`, `errors` y `tree`; puede combinarse con cada fase.
 
-Los diagnósticos indican `fase:línea:columna: mensaje`, con posiciones desde 1.
-En modo texto van a la salida de error; con `--json`, se incluyen en `errors`
-en la salida estándar. Un fallo al leer el archivo se informa por la salida de
-error incluso con `--json`.
+El orden es léxico → sintáctico → semántico. Si una fase tiene errores, se
+reportan y no se ejecuta la siguiente. ANTLR puede recuperarse de errores para
+continuar dentro de una fase, pero no garantiza detectar absolutamente todos.
+Los diagnósticos tienen el formato `fase:línea:columna: mensaje`, desde 1.
 
-| Código de salida del CLI | Significado |
+En modo texto los errores van a stderr; con `--json`, los diagnósticos de
+análisis aparecen en `errors` por stdout. Los fallos al leer el archivo siempre
+van a stderr. Los códigos de salida son:
+
+| Código | Significado |
 | --- | --- |
-| `0` | La fase solicitada terminó sin errores. |
-| `1` | Se encontraron errores en el programa Alga. |
-| `2` | Argumentos incorrectos o archivo de entrada ilegible/inexistente. |
+| `0` | Análisis sin errores hasta la fase solicitada. |
+| `1` | Se encontraron errores en el programa. |
+| `2` | Argumentos incorrectos o archivo ilegible/inexistente. |
 
-### Ejemplos y particularidades del lenguaje
+## Pruebas
 
-- `examples/01_validos/`: programas que deben superar el análisis completo.
-- `examples/02_errores_lexicos/`, `03_errores_sintacticos/` y
-  `04_errores_semanticos/`: casos que fallan intencionalmente.
-- `examples/05_metodos_numericos/`: Jacobi, Gauss-Jordan y LU expresados en Alga.
-  Consulta su [README](examples/05_metodos_numericos/README.md) para conocer los
-  supuestos de los algoritmos; el analizador no calcula sus resultados.
-- `examples/casos.json`: manifiesto con la fase y el resultado esperado por caso.
-
-Ejemplo de validación de un método numérico:
+Con el entorno activo, ejecuta:
 
 ```bash
-python3 main.py examples/05_metodos_numericos/01_jacobi.alga
+make test
 ```
 
-Las declaraciones, asignaciones y expresiones terminan en `;`. Los bloques de
-`if`, `else`, `while` y `for` requieren llaves. El contador de un `for` debe
-declararse antes: la cabecera admite asignaciones, no declaraciones ni `i++`.
-Las comparaciones disponibles son `==`, `!=`, `<` y `>`; no se admiten `<=`,
-`>=` ni comparaciones encadenadas. El lexer actual no admite comentarios.
-
-Las dimensiones deben ser enteros positivos. Los índices empiezan en cero;
-los vectores requieren un índice y las matrices dos. Se verifican el tipo de
-los índices y los límites de índices literales, pero no los valores de
-expresiones dinámicas. Tampoco se comprueban la convergencia de los bucles,
-divisiones por cero ni resultados numéricos.
-
-## Pruebas y documentación de la gramática
-
-Después de instalar las dependencias y generar los analizadores:
+Este comando regenera los analizadores, ejecuta la suite y verifica las
+24 derivaciones. Si ya generaste el código, también puedes usar:
 
 ```bash
-PYTHONPATH=src python3 -m unittest discover -s tests -v
+python3 -m unittest discover -s tests -v
 python3 scripts/derivations.py --check
 ```
 
-Las pruebas usan `unittest`, incluido en Python; no requieren `pytest`.
-Comprueban reglas de tipos, casos del manifiesto, el CLI y la gramática
-documental. Los casos negativos pasan la prueba cuando se detecta el error
-esperado.
+La suite tiene **40 pruebas**: incluye los 74 casos del manifiesto, la demo,
+los dos programas largos, los 25 ejemplos del DOCX y la correspondencia entre
+las producciones del informe, `docs/glc.json` y el parser G4.
+Los casos de error pasan cuando aparece el diagnóstico esperado.
 
-Sin Java, JAR ni runtime de ANTLR puedes comprobar únicamente los tipos y la
-documentación con:
+Las derivaciones ahora se obtienen del árbol de ANTLR. Cada paso sustituye el
+primer no terminal y comprueba que la producción esté en la GLC del informe;
+la cadena final se compara con los tokens originales. `--check` compara
+además el resultado con los Markdown guardados. Esto no prueba la ausencia
+universal de ambigüedad. A diferencia de la versión anterior, esta comprobación
+requiere el runtime y los analizadores generados.
 
-```bash
-PYTHONPATH=src python3 -m unittest discover -s tests -p 'test_types.py' -v
-python3 -m unittest discover -s tests -p 'test_glc.py' -v
-python3 scripts/derivations.py --check
-```
-
-Para regenerar las 24 derivaciones de `docs/04_derivaciones/`:
+Para regenerar los documentos (sobrescribe los seis Markdown):
 
 ```bash
-python3 scripts/derivations.py
+make derivations
 ```
 
-Este último comando sobrescribe los Markdown de derivaciones usando
-`docs/glc.json` y `docs/ejemplos_informe.json`. Su verificador documental es
-independiente del parser ANTLR y no sustituye las pruebas de integración.
+## Organización
 
-Los archivos `.alga` son texto UTF-8: la extensión identifica el lenguaje, pero
-el CLI también acepta `.txt`. Si renombras casos existentes, actualiza sus
-rutas en `examples/casos.json` y los patrones `*.alga` de las pruebas.
-
-El verificador de derivaciones sustituye en cada paso el primer no terminal,
-comprueba que la producción exista y compara la cadena terminal final con los
-tokens originales. `--check` compara además las derivaciones regeneradas con
-los Markdown guardados. Ejecútalo sin `python -O`, pues utiliza `assert`.
-El árbol mostrado por `--phase parse` no es una lista de pasos de derivación.
-
-Consulta la [revisión del Hito 1](docs/revision_hito1.md) para el contraste con
-el PDF de requisitos y el DOCX, las pruebas realizadas y los pendientes de entrega.
-
-## Estructura y scripts auxiliares
-
-| Ruta | Contenido |
+| Archivo o carpeta | Función |
 | --- | --- |
-| `main.py` | Entrada directa para analizar un archivo sin configurar `PYTHONPATH`. |
-| `grammar/` | Gramáticas ANTLR del lexer y parser. |
-| `src/alga/driver.py` | CLI y coordinación de las fases. |
-| `src/alga/semantic.py` | Visitor semántico y ámbitos de variables. |
-| `src/alga/types.py` | Tipos, operaciones, funciones e indexación. |
-| `src/alga/generated/` | Código creado por `scripts/generate.py`. |
-| `tests/` | Pruebas unitarias, documentales y de integración. |
-| `docs/` | GLC, ejemplos del informe y derivaciones. |
-| `examples/` | Programas válidos y casos de error. |
-| `tools/` | Ubicación predeterminada del JAR, que se descarga por separado. |
+| `main.py` | Lee el archivo con `FileStream`, crea lexer/parser y ejecuta el visitor. |
+| `grammar/AlgaLexer.g4` | Tokens y expresiones regulares del informe. |
+| `grammar/AlgaParser.g4` | Producciones del DOCX expresadas en ANTLR. |
+| `gen/` | Código generado mediante `make`. |
+| `semantic/semantic_visitor.py` | Comprobaciones semánticas sobre el árbol. |
+| `semantic/symbol_table.py` | Clases `Symbol` y `SymbolTable` con ámbitos anidados. |
+| `semantic/type_rules.py` | Compatibilidad de tipos, dimensiones, funciones e índices. |
+| `semantic/errors.py` | Error semántico y captura de diagnósticos ANTLR. |
+| `examples/` | Programas válidos, errores por fase y métodos numéricos, todos `.txt`. |
+| `examples/casos.json` | Archivo, fase y error esperado de cada caso. |
+| `tests/` | Pruebas con `unittest`, incluido en Python. |
+| `docs/` | GLC, derivaciones, correspondencia con las clases y revisión del hito. |
+| `clases/` | Material de referencia original del profesor. |
 
-Los siguientes scripts son auxiliares de entrega y **no son necesarios para
-analizar programas**. En el estado actual del repositorio faltan entradas que
-necesitan para funcionar:
+Las declaraciones y asignaciones terminan en `;`. Los bloques de control llevan
+llaves; el contador del `for` se declara antes de la cabecera. Los comparadores
+son `==`, `!=`, `<` y `>`; no hay `<=`, `>=`, `i++` ni comentarios en las entradas
+Alga porque no están definidos por su gramática actual.
 
-- `python3 scripts/presentation.py`: necesita
-  `entregables/09_presentacion.json` y escribe
-  `entregables/09_presentacion.pdf`. No requiere paquetes Python adicionales.
-- `python3 scripts/guide_pdf.py`: necesita
-  `docs/12_cambios_docx_iteraciones.md`, la carpeta `entregables/` y las
-  bibliotecas del sistema Cairo, Pango, Pangocairo y GObject. Escribe
-  `entregables/12_cambios_docx_iteraciones.pdf`.
-- `python3 scripts/package.py`: intenta crear `dist/alga_hito1.zip`, pero exige
-  archivos de raíz que no están incluidos con los nombres esperados: `.gitignore`
-  y `Teoria_de_Compiladores_Trabajo_Parcial_y_Final.pdf`. El PDF disponible se
-  llama `Teoria_de_Compiladores_Trabajo_Parcial_y_Final-1.pdf`; el DOCX
-  `Grupo 2 Trabajo Parcial Compiladores(1).docx` ya está presente. Hasta restaurar
-  las entradas faltantes o adaptar
-  su lista `ROOT_FILES`, falla. El ZIP excluye el código `generated`, los
-  entornos virtuales y el JAR de `tools/`; quien lo reciba deberá preparar
-  ANTLR y generar los analizadores nuevamente.
+Los índices empiezan en cero. Se validan los límites de índices literales,
+pero no los valores de expresiones dinámicas. Tampoco se analiza inicialización
+definitiva, división por cero o convergencia. Son límites del comportamiento
+existente, que esta reescritura conserva.
 
-Las derivaciones también contienen una referencia a `docs/03_gramatica.md`,
-ausente en esta copia; la GLC disponible está en `docs/glc.json`.
+## Entrega y relación con las clases
+
+- [Correspondencia del DOCX con el parser](docs/03_gramatica.md).
+- [Referencias de clase y notas sobre elementos adicionales](docs/notas_clases.md).
+- [Revisión de todos los requisitos del Hito 1](docs/revision_hito1.md).
+- [Ejemplos de métodos numéricos](examples/05_metodos_numericos/README.md).
+
+Para crear `dist/alga_hito1.zip`:
+
+```bash
+make package
+```
+
+Incluye fuentes, pruebas, entradas `.txt`, documentación, DOCX, PDF de requisitos
+y materiales de clase. Excluye entornos virtuales, cachés, JAR y analizadores
+generados. Quien lo reciba debe instalar dependencias y ejecutar `make`.
+Crear el ZIP **no completa por sí solo el Hito 1**: todavía faltan la presentación
+PDF y la demo en video de máximo cinco minutos.
 
 ## Problemas frecuentes
 
-| Mensaje o problema | Solución |
+| Problema | Solución |
 | --- | --- |
-| `Se requiere Java y ANTLR 4.13.2` | Verifica `java -version`, el JAR en `tools/` y cualquier valor de `ANTLR_JAR`. |
-| `No module named antlr4` | Activa `.venv` e instala `requirements.txt` con el mismo intérprete que ejecutará el CLI. |
-| `No module named alga` | Usa `python3 main.py archivo` o, para ejecutar como módulo, configura `PYTHONPATH=src`. |
-| `No module named alga.generated` | Ejecuta `python3 scripts/generate.py` antes del CLI y de las pruebas de integración. |
-| Error de versión entre ANTLR y el runtime | Usa el JAR 4.13.2, reinstala los requisitos y regenera los analizadores. |
-| `externally-managed-environment` al instalar con pip | Crea y activa `.venv` antes de instalar las dependencias. |
-| No se puede crear `.venv` o falta `ensurepip` | Instala el soporte `venv` correspondiente a tu Python según tu distribución. |
-| El programa muestra `OK` pero no imprime cálculos | Es el comportamiento esperado: esta entrega solo realiza análisis estático. |
+| `java: ... not found` | Instala Java y comprueba que `java -version` funcione. |
+| Falta ANTLR 4.13.1 | Usa la instalación de clase, descarga el JAR en `tools/` o indica `ANTLR_JAR`. |
+| `No module named antlr4` | Activa `.venv` y ejecuta `python3 -m pip install -r requirements.txt`. |
+| `No module named gen.AlgaLexer` o `gen.AlgaParser` | Ejecuta `make` antes del programa y las pruebas. |
+| Versión del generador distinta del runtime | Usa 4.13.1 para ambos, reinstala los requisitos y ejecuta `make`. |
+| `externally-managed-environment` | Instala las dependencias dentro de `.venv`. |
+| Falta `venv`/`ensurepip` | Instala el paquete de entornos virtuales correspondiente a tu distribución. |
+| `make: ... not found` | Instala `make` o su equivalente en tu distribución. |
+| El programa muestra `OK` pero no calcula | Es correcto: esta entrega hace análisis estático. |
 
-En una nueva terminal, vuelve a ejecutar `source .venv/bin/activate`.
-`python3 main.py archivo` no necesita `PYTHONPATH`; consérvalo en los comandos
-indicados para pruebas o ejecución como módulo. Para salir del entorno virtual,
-usa `deactivate`.
+Para cerrar el entorno virtual, ejecuta `deactivate`.

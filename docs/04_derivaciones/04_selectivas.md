@@ -1,10 +1,10 @@
 # Selectivas: cuatro derivaciones más a la izquierda
 
-GLC ampliada propuesta para el informe (ver `../03_gramatica.md`). `id`, `num` y `string` son terminales; sus lexemas se indican debajo. Cada fila sustituye un solo no terminal, siempre el situado más a la izquierda. La derivación parte del no terminal de la construcción; desde S se alcanza con `S ⇒ L ⇒ stmt L ⇒ I L` y al final `L ⇒ ε`.
+GLC del informe (ver [correspondencia con ANTLR](../03_gramatica.md)). `id`, `num` y `string` son terminales; sus lexemas se indican debajo. Cada fila sustituye un solo no terminal, siempre el situado más a la izquierda. La derivación parte del no terminal de la construcción; desde S se alcanza con `S ⇒ L ⇒ stmt L ⇒ I L` y al final `L ⇒ ε`.
 
 ## Ejemplo 1
 
-```alga
+```text
 if (det(A) != 0) { X = solve(A,b); }
 ```
 
@@ -70,7 +70,7 @@ Lexemas en orden: `id=A num=0 id=X id=solve id=A id=b`
 
 ## Ejemplo 2
 
-```alga
+```text
 if (norm(v) == 0) { print("Vector nulo"); } else { v = v / norm(v); }
 ```
 
@@ -149,7 +149,7 @@ Lexemas en orden: `id=norm id=v num=0 id=print string="Vector nulo" id=v id=v id
 
 ## Ejemplo 3
 
-```alga
+```text
 if (rows(A) == cols(A)) { k = trace(A); }
 ```
 
@@ -216,7 +216,7 @@ Lexemas en orden: `id=rows id=A id=cols id=A id=k id=A`
 
 ## Ejemplo 4
 
-```alga
+```text
 if (isSymmetric(A)) { print("Simétrica"); } else { print("No simétrica"); }
 ```
 
