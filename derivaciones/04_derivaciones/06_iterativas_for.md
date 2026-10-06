@@ -1,6 +1,6 @@
 # Iterativas_for: cuatro derivaciones más a la izquierda
 
-GLC del informe (ver [correspondencia con ANTLR](../03_gramatica.md)). `id`, `num` y `string` son terminales; sus lexemas se indican debajo. Cada fila sustituye un solo no terminal, siempre el situado más a la izquierda. La derivación parte del no terminal de la construcción; desde S se alcanza con `S ⇒ L ⇒ stmt L ⇒ W L` y al final `L ⇒ ε`.
+GLC del informe. `id`, `num` y `string` son terminales; sus lexemas se indican debajo. Cada fila sustituye un solo no terminal, siempre el situado más a la izquierda. La derivación parte del no terminal de la construcción; desde S se alcanza con `S ⇒ L ⇒ stmt L ⇒ W L` y al final `L ⇒ ε`.
 
 ## Ejemplo 1
 
