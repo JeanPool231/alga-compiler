@@ -1,0 +1,2 @@
+matrix A[2][2] = [[1,2],[3,4]]; matrix B[2][2] = [[1,0],[0,1]]; scalar k = 2; vector b[2] = [1,2]; vector c[2] = [3,4];
+trace(A) + k / 2.0;

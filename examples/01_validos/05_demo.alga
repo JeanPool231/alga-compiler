@@ -1,0 +1,10 @@
+matrix A[2][2] = [[2,0],[0,3]];
+vector b[2] = [4,9];
+vector X[2];
+scalar k = det(A);
+if (k != 0) {
+    X = solve(A,b);
+    print(X);
+} else {
+    print("Matriz singular");
+}

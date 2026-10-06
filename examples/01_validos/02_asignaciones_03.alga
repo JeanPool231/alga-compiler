@@ -1,0 +1,2 @@
+scalar k; vector v[3]; vector u[3] = [1,2,3]; matrix A[2][2]; matrix B[2][2] = [[1,0],[0,1]]; matrix C[2][2];
+A = [[1,2],[3,4]];

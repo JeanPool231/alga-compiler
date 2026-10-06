@@ -1,0 +1,27 @@
+matrix A[2][2] = [[4,1],[2,3]];
+vector b[2] = [1,2];
+vector x[2] = [0,0];
+vector nuevo[2] = [0,0];
+scalar i;
+scalar j;
+scalar suma;
+scalar iter = 0;
+scalar maxIter = 100;
+scalar tol = 0.000001;
+scalar error = norm(b - A * x);
+scalar seguir = 1;
+while (seguir != 0) {
+    for (i = 0; i < 2; i = i + 1) {
+        suma = 0;
+        for (j = 0; j < 2; j = j + 1) {
+            if (i != j) { suma = suma + A[i][j] * x[j]; }
+        }
+        nuevo[i] = (b[i] - suma) / A[i][i];
+    }
+    x = nuevo;
+    error = norm(b - A * x);
+    iter = iter + 1;
+    if (error < tol) { seguir = 0; }
+    if (iter == maxIter) { seguir = 0; }
+}
+if (error < tol) { print(x); } else { print("No convergio en maxIter"); }

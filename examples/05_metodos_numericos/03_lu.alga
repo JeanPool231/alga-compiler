@@ -1,0 +1,20 @@
+matrix A[2][2] = [[4,3],[6,3]];
+matrix L[2][2] = [[1,0],[0,1]];
+matrix U[2][2] = A;
+scalar i;
+scalar j;
+scalar k;
+scalar valido = 1;
+for (k = 0; k < 2; k = k + 1) {
+    if (valido == 1) {
+        if (U[k][k] != 0) {
+            for (i = k + 1; i < 2; i = i + 1) {
+                L[i][k] = U[i][k] / U[k][k];
+                for (j = k; j < 2; j = j + 1) {
+                    U[i][j] = U[i][j] - L[i][k] * U[k][j];
+                }
+            }
+        } else { valido = 0; }
+    }
+}
+if (valido == 1) { print(L); print(U); } else { print("LU sin pivoteo no aplicable"); }

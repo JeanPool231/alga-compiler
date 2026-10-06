@@ -1,0 +1,1 @@
+matrix A[2][3]; matrix B[2][2]; A * B;

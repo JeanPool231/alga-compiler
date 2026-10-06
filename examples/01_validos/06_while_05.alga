@@ -1,0 +1,2 @@
+scalar i = 0; scalar j = 0; scalar k = 0; scalar error = 1; scalar tol = 0.01; scalar suma = 0; scalar pivote = 2; vector v[3] = [1,2,3]; vector x[2] = [0,0]; vector paso[2] = [1,2]; matrix A[2][2] = [[2,4],[1,3]];
+while (k < 10) { if (error < tol) { k = 10; } else { error = error / 2; k = k + 1; } }

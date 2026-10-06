@@ -1,0 +1,2 @@
+matrix A[2][2] = [[1,0],[0,1]]; scalar k = 2; vector b[2] = [1,2]; vector X[2]; vector v[3] = [1,2,3];
+if (k > 0) { A = A * k; }

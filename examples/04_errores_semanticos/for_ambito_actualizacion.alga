@@ -1,0 +1,1 @@
+scalar i; for (i = 0; i < 3; i = paso) { scalar paso = 1; }
