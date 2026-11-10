@@ -1,0 +1,7 @@
+matrix A[2][2] = [[4,1],[2,3]];
+vector b[2] = [1,2];
+vector x[2];
+scalar d = det(A);
+x = solve(A, b);
+vector r[2] = b - A * x;
+print(norm(r));

@@ -1,14 +1,26 @@
 from gen.AlgaParserVisitor import AlgaParserVisitor
-from .symbol_table import SymbolTable
+
 from .errors import SemanticError
-from .type_rules import Type, SCALAR, STRING, BOOL, ERROR, NUMERIC
-from .type_rules import binary, builtin, indexed
+from .symbol_table import SymbolTable
+from .type_rules import (
+    BOOL,
+    ERROR,
+    NUMERIC,
+    SCALAR,
+    STRING,
+    Type,
+    binary,
+    builtin,
+    indexed,
+)
 
 
 class SemanticVisitor(AlgaParserVisitor):
     def __init__(self):
         self.symtab = SymbolTable()
         self.errors = []
+        self.decls = {}
+        self.refs = {}
 
     def _error(self, message, ctx):
         error = SemanticError(message, ctx.start.line, ctx.start.column + 1)
@@ -19,7 +31,7 @@ class SemanticVisitor(AlgaParserVisitor):
         if expected == ERROR or actual == ERROR:
             return
         if expected != actual:
-            self._error(f'Se esperaba {expected}; se obtuvo {actual}', ctx)
+            self._error(f"Se esperaba {expected}; se obtuvo {actual}", ctx)
 
     def _operation(self, ctx, left, right):
         try:
@@ -53,14 +65,16 @@ class SemanticVisitor(AlgaParserVisitor):
         if valid:
             declared = Type(ctx.start.text, tuple(sizes))
         else:
-            declared = self._error('Las dimensiones deben ser enteros positivos', ctx)
+            declared = self._error("Las dimensiones deben ser enteros positivos", ctx)
 
         # J → = E | ε. El nombre nuevo aún no está visible en su inicializador.
         actual = None
         if ctx.j().e() is not None:
             actual = self.visit(ctx.j().e())
         try:
-            self.symtab.declare(name, declared, ctx.start.line, ctx.start.column + 1)
+            self.decls[ctx] = self.symtab.declare(
+                name, declared, ctx.start.line, ctx.start.column + 1
+            )
         except SemanticError as error:
             self.errors.append(error)
         if actual is not None:
@@ -80,8 +94,9 @@ class SemanticVisitor(AlgaParserVisitor):
     def visitRef(self, ctx):
         name = ctx.ID().getText()
         symbol = self.symtab.lookup(name)
+        self.refs[ctx] = symbol
         if symbol is None:
-            base = self._error(f'Variable {name} no declarada', ctx)
+            base = self._error(f"Variable {name} no declarada", ctx)
         else:
             base = symbol.type_
 
@@ -140,7 +155,7 @@ class SemanticVisitor(AlgaParserVisitor):
         if ctx.f() is not None:
             type_ = self.visit(ctx.f())
             if type_ != ERROR and type_.kind not in NUMERIC:
-                return self._error(f'Signo unario no definido para {type_}', ctx)
+                return self._error(f"Signo unario no definido para {type_}", ctx)
             return type_
         if ctx.NUM() is not None:
             return SCALAR
@@ -161,7 +176,7 @@ class SemanticVisitor(AlgaParserVisitor):
         while tail.n() is not None:
             count += 1
             tail = tail.nprima()
-        return Type('vector', (count,))
+        return Type("vector", (count,))
 
     # M → [ V M′ ]
     def visitM(self, ctx):
@@ -175,8 +190,8 @@ class SemanticVisitor(AlgaParserVisitor):
             rows += 1
             tail = tail.mprima()
         if not regular:
-            return self._error('La matriz literal debe ser rectangular', ctx)
-        return Type('matrix', (rows, first.shape[0]))
+            return self._error("La matriz literal debe ser rectangular", ctx)
+        return Type("matrix", (rows, first.shape[0]))
 
     # I → if ( C ) B O
     def visitI(self, ctx):
@@ -197,13 +212,15 @@ class SemanticVisitor(AlgaParserVisitor):
         tail = ctx.q()
         if tail.e() is None:
             if left != BOOL and left != ERROR:
-                self._error(f'La condición requiere bool; se obtuvo {left}', ctx)
+                self._error(f"La condición requiere bool; se obtuvo {left}", ctx)
             return
         right = self.visit(tail.e())
         if left == ERROR or right == ERROR:
             return
         if left != SCALAR or right != SCALAR:
-            self._error(f'La comparación requiere escalares; recibió {left} y {right}', ctx)
+            self._error(
+                f"La comparación requiere escalares; recibió {left} y {right}", ctx
+            )
 
     # W → while ( C ) B | for ( As ; C ; As ) B
     def visitW(self, ctx):

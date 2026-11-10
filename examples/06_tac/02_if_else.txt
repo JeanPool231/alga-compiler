@@ -1,0 +1,5 @@
+scalar a = 10;
+scalar b = 20;
+scalar m;
+if (a > b) { m = a; } else { m = b; }
+if (m != 0) { print(m); }
