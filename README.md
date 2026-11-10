@@ -1,7 +1,8 @@
-# Alga — Hito 1
+# Alga — Hito 2
 
 Analizador léxico, sintáctico y semántico para el lenguaje Alga, orientado a
-escalares, vectores y matrices. **Hace análisis estático:** no ejecuta bucles,
+escalares, vectores y matrices, con generación de **código intermedio de tres
+direcciones (TAC)**. **Hace análisis estático:** no ejecuta bucles,
 no calcula operaciones matriciales y no imprime los argumentos de `print`.
 
 La estructura sigue el laboratorio de MiniLang en
@@ -121,6 +122,8 @@ python3 main.py test_valid.txt --phase lex
 python3 main.py test_valid.txt --phase parse
 python3 main.py test_valid.txt --phase semantic
 python3 main.py test_invalid.txt --json
+python3 main.py examples/06_tac/02_if_else.txt --phase tac
+python3 main.py examples/06_tac/02_if_else.txt --phase tac --out salida.tac
 python3 main.py --help
 ```
 
@@ -129,9 +132,12 @@ python3 main.py --help
   (`s`, `l`, `d`, `e`, etc.). No muestra una derivación paso a paso.
 - `semantic`: revisa nombres, ámbitos, tipos, dimensiones y funciones. Es la
   fase predeterminada.
-- `--json`: devuelve `tokens`, `errors` y `tree`; puede combinarse con cada fase.
+- `tac`: si no hay errores, genera e imprime el código de tres direcciones
+  (secciones `.data` y `.code`). Con `--out ARCHIVO` también lo guarda.
+- `--json`: devuelve `tokens`, `errors` y `tree` (y `tac` en la fase `tac`);
+  puede combinarse con cada fase.
 
-El orden es léxico → sintáctico → semántico. Si una fase tiene errores, se
+El orden es léxico → sintáctico → semántico → TAC. Si una fase tiene errores, se
 reportan y no se ejecuta la siguiente. ANTLR puede recuperarse de errores para
 continuar dentro de una fase, pero no garantiza detectar absolutamente todos.
 Los diagnósticos tienen el formato `fase:línea:columna: mensaje`, desde 1.
@@ -162,9 +168,10 @@ python3 -m unittest discover -s tests -v
 python3 scripts/derivations.py --check
 ```
 
-La suite tiene **40 pruebas**: incluye los 74 casos del manifiesto, la demo,
-los dos programas largos, los 25 ejemplos del DOCX y la correspondencia entre
-las producciones del informe, `docs/glc.json` y el parser G4.
+La suite tiene **55 pruebas**: incluye los 74 casos del manifiesto, la demo,
+los dos programas largos, las reglas de tipos e índices y 29 pruebas del
+generador de código intermedio (TAC esperado, nombres únicos, invariantes y
+comparación con los `.tac` de referencia de `examples/06_tac/`).
 Los casos de error pasan cuando aparece el diagnóstico esperado.
 
 Las derivaciones ahora se obtienen del árbol de ANTLR. Cada paso sustituye el
@@ -192,7 +199,10 @@ make derivations
 | `semantic/symbol_table.py` | Clases `Symbol` y `SymbolTable` con ámbitos anidados. |
 | `semantic/type_rules.py` | Compatibilidad de tipos, dimensiones, funciones e índices. |
 | `semantic/errors.py` | Error semántico y captura de diagnósticos ANTLR. |
+| `codegen/code_gen_visitor.py` | Visitor que traduce el árbol validado a código de tres direcciones. |
+| `codegen/TACEmitter.py` | Cuádruplas, temporales, etiquetas y formato `.data`/`.code` del TAC. |
 | `examples/` | Programas válidos, errores por fase y métodos numéricos, todos `.txt`. |
+| `examples/06_tac/` | Programas de ejemplo y su TAC de referencia (`.tac`). |
 | `examples/casos.json` | Archivo, fase y error esperado de cada caso. |
 | `tests/` | Pruebas con `unittest`, incluido en Python. |
 | `docs/` | GLC, derivaciones, correspondencia con las clases y revisión del hito. |
