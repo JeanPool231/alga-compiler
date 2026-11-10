@@ -1,0 +1,7 @@
+scalar x = 5;
+scalar y = 3;
+scalar z = x + y * 2;
+scalar w = (x + y) * 2;
+scalar n = -x;
+scalar r = x - y - 1;
+print(z);

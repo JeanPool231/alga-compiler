@@ -116,7 +116,7 @@ def documents():
     starts = {'declaraciones': 'D', 'asignaciones': 'A', 'expresiones': 'exprstmt', 'selectivas': 'I', 'iterativas_while': 'W', 'iterativas_for': 'W'}
     for index, (name, selection) in enumerate(chosen.items(), 1):
         parts = [f'# {name.capitalize()}: cuatro derivaciones más a la izquierda\n',
-                 'GLC del informe (ver [correspondencia con ANTLR](../03_gramatica.md)). '
+                 'GLC del informe. '
                  '`id`, `num` y `string` son terminales; sus lexemas se indican debajo. '
                  'Cada fila sustituye un solo no terminal, siempre el situado más a la izquierda. '
                  'La derivación parte del no terminal de la construcción; desde S se alcanza con '
