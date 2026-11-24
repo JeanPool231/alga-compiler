@@ -1,4 +1,4 @@
-# Alga — Hito 2
+# Alga
 
 Analizador léxico, sintáctico y semántico para el lenguaje Alga, orientado a
 escalares, vectores y matrices, con generación de **código intermedio de tres

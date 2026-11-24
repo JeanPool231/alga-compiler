@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import sys
 
 from antlr4 import CommonTokenStream, FileStream, InputStream, Token
@@ -11,7 +12,15 @@ from semantic.errors import DiagnosticListener
 from semantic.semantic_visitor import SemanticVisitor
 
 
-def analizar(input_stream, phase="semantic"):
+def analizar(input_stream, phase="semantic", base_dir=None):
+    return _pipeline(input_stream, phase, base_dir)[0]
+
+
+def compilar(input_stream, base_dir=None):
+    return _pipeline(input_stream, "tac", base_dir)
+
+
+def _pipeline(input_stream, phase, base_dir=None):
     lexer = AlgaLexer(input_stream)
     lexical = DiagnosticListener("léxico")
     lexer.removeErrorListeners()
@@ -32,7 +41,7 @@ def analizar(input_stream, phase="semantic"):
             )
     result = {"tokens": tokens, "errors": lexical.errors, "tree": None}
     if lexical.errors or phase == "lex":
-        return result
+        return result, None
 
     parser = AlgaParser(stream)
     syntax = DiagnosticListener("sintáctico")
@@ -42,23 +51,22 @@ def analizar(input_stream, phase="semantic"):
     result["tree"] = tree.toStringTree(recog=parser)
     result["errors"] = syntax.errors
     if parser.getNumberOfSyntaxErrors() > 0 or phase == "parse":
-        return result
+        return result, None
 
-    visitor = SemanticVisitor()
+    visitor = SemanticVisitor(base_dir=base_dir)
     visitor.visit(tree)
     for error in visitor.errors:
         result["errors"].append(str(error))
     if result["errors"] or phase != "tac":
-        return result
+        return result, None
 
     generador = CodeGenVisitor(visitor)
     generador.visit(tree)
     result["tac"] = generador.tac.code()
-    return result
+    return result, generador.tac
 
 
 def analyze(source, phase="semantic"):
-    # InputStream permite probar cadenas
     return analizar(InputStream(source), phase)
 
 
@@ -70,9 +78,8 @@ def mostrar_tokens(tokens):
 
 
 def main(argv=None):
-    # Opciones adicionales para conservar las fases, JSON y códigos de salida.
     cli = argparse.ArgumentParser(
-        description="Alga: análisis estático y código intermedio"
+        description="Alga"
     )
     cli.add_argument("file")
     cli.add_argument(
@@ -91,7 +98,8 @@ def main(argv=None):
     except (OSError, UnicodeError) as error:
         print(f"No se pudo leer {args.file}: {error}", file=sys.stderr)
         return 2
-    result = analizar(input_stream, args.phase)
+    base_dir = os.path.dirname(os.path.abspath(args.file)) 
+    result = analizar(input_stream, args.phase, base_dir=base_dir)
 
     if args.json:
         print(json.dumps(result, ensure_ascii=False, indent=2))

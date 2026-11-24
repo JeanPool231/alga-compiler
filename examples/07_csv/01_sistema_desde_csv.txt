@@ -1,0 +1,3 @@
+auto A = csv("A.csv");
+auto b = csv("b.csv");
+print(solve(A, b));

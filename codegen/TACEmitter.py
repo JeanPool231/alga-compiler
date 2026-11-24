@@ -1,4 +1,4 @@
-import re
+import re  # noqa: N999
 
 from semantic.type_rules import SCALAR, STRING
 
@@ -12,13 +12,14 @@ def is_number(texto):
 
 
 class Quad:
-    __slots__ = ("op", "arg1", "arg2", "res")
+    __slots__ = ("arg1", "arg2", "op", "pos", "res")
 
     def __init__(self, op, arg1=None, arg2=None, res=None):
         self.op = op
         self.arg1 = arg1
         self.arg2 = arg2
         self.res = res
+        self.pos = None
 
     def tuple_like(self):
         return (self.op, self.arg1, self.arg2, self.res)
@@ -66,6 +67,8 @@ class TACEmitter:
         self.types = {}
         self._storage = []
         self._temps = []
+        self.pos = None
+        self.datasets = {}
 
     def declare(self, name, type):
         self.types[name] = type
@@ -91,7 +94,9 @@ class TACEmitter:
         return self.types[op]
 
     def _add(self, *args):
-        self._instructions.append(Quad(*args))
+        quad = Quad(*args)
+        quad.pos = self.pos
+        self._instructions.append(quad)
 
     def emit(self, target, left, op, right):
         self._add(op, left, right, target)
@@ -139,10 +144,14 @@ class TACEmitter:
             lines.append(".data")
             data = self._storage + self._temps
             width = max([len(f"{n} : {t}") for n, t in data] + [0])
+
             for name, type in data:
                 decl = f"{name} : {type}"
                 lines.append(f"    {decl.ljust(width)}  ; {self.bytes_of(type)} bytes")
             lines.append(".code")
+
         for q in self._instructions:
             lines.append(str(q) if q.op == "label" else f"    {q}")
+
         return "\n".join(lines)
+    pos = None

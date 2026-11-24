@@ -12,10 +12,12 @@ l : stmt l | ;
 stmt : d | a | exprstmt | i | w ;
 
 //DECLARACIONES
-// D → scalar id J ; | vector id [ num ] J ; | matrix id [ num ] [ num ] J ;
+// D → scalar id J ; | vector id [ num ] J ; | matrix id [ num ] [ num ] J ; | auto id = E ;
+// auto deduce el tipo (y las dimensiones) del inicializador, que es obligatorio.
 d : TK_SCALAR ID j TK_SEMICOLON
   | TK_VECTOR ID TK_LBRACKET NUM TK_RBRACKET j TK_SEMICOLON
   | TK_MATRIX ID TK_LBRACKET NUM TK_RBRACKET TK_LBRACKET NUM TK_RBRACKET j TK_SEMICOLON
+  | TK_AUTO ID TK_ASSIGN e TK_SEMICOLON
   ;
 j : TK_ASSIGN e | ;
 

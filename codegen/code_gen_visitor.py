@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from gen.AlgaParser import AlgaParser
 from gen.AlgaParserVisitor import AlgaParserVisitor
+from semantic.literals import decode_string
 from semantic.type_rules import BOOL, SCALAR, VOID, Type, binary, builtin
 
 from .TACEmitter import WORD, TACEmitter, is_number
@@ -11,6 +12,7 @@ class CodeGenVisitor(AlgaParserVisitor):
     def __init__(self, semantic):
         self.semantic = semantic
         self.tac = TACEmitter()
+        self.tac.datasets = semantic.datasets
 
     # S → L
     def visitS(self, ctx):
@@ -22,17 +24,25 @@ class CodeGenVisitor(AlgaParserVisitor):
             self.visit(ctx.stmt())
             ctx = ctx.l()
 
+    # stmt → D | A | exprstmt | I | W  (registra la posición para los errores de ejecución)
+    def visitStmt(self, ctx):
+        self._mark(ctx)
+        return self.visitChildren(ctx)
+
+    def _mark(self, ctx):
+        self.tac.pos = (ctx.start.line, ctx.start.column + 1)
+
     # B → { L }
     def visitB(self, ctx):
         self.visit(ctx.l())
 
-    # D → scalar id J ; | vector id [ num ] J ; | matrix id [ num ] [ num ] J ;
+    # D → scalar id J ; | vector id [ num ] J ; | matrix id [ num ] [ num ] J ; | auto id = E ;
     def visitD(self, ctx):
         symbol = self.semantic.decls[ctx]
         name = symbol.unique
         self.tac.declare(name, symbol.type_)
 
-        initial = ctx.j().e()
+        initial = ctx.e() if ctx.TK_AUTO() is not None else ctx.j().e()
         if initial is None:
             return
         self._assign_to_variable(name, initial)
@@ -172,7 +182,13 @@ class CodeGenVisitor(AlgaParserVisitor):
             arguments.append(self.visit(tail.e()))
             tail = tail.k()
 
-        type = builtin(name, [self.tac.type_of(a) for a in arguments])
+        if name == "csv":
+            if len(arguments) == 1:
+                arguments.append('","')  # separador por omisión
+            key = (decode_string(arguments[0]), decode_string(arguments[1]))
+            type = self.semantic.datasets[key].type_
+        else:
+            type = builtin(name, [self.tac.type_of(a) for a in arguments])
         for argument in arguments:
             self.tac.emit_param(argument)
         if type == VOID:
@@ -264,10 +280,12 @@ class CodeGenVisitor(AlgaParserVisitor):
 
         start = self.tac.new_tag()
         end = self.tac.new_tag()
+        self._mark(ctx)
         self.tac.emit_Tag(start)
         condition = self.visit(ctx.c())
         self.tac.emit_goto_false(condition, end)
         self.visit(ctx.b())
+        self._mark(ctx)
         if assigns:
             self.visit(assigns[1])
         self.tac.emit_goto(start)

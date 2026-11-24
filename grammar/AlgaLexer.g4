@@ -3,6 +3,7 @@ lexer grammar AlgaLexer;
 TK_MATRIX    : 'matrix' ;
 TK_VECTOR    : 'vector' ;
 TK_SCALAR    : 'scalar' ;
+TK_AUTO      : 'auto' ;
 TK_IF        : 'if' ;
 TK_ELSE      : 'else' ;
 TK_WHILE     : 'while' ;

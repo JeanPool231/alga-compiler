@@ -1,6 +1,8 @@
 from gen.AlgaParserVisitor import AlgaParserVisitor
 
+from .csv_data import CsvError, load_csv
 from .errors import SemanticError
+from .literals import decode_string, string_literal
 from .symbol_table import SymbolTable
 from .type_rules import (
     BOOL,
@@ -16,11 +18,13 @@ from .type_rules import (
 
 
 class SemanticVisitor(AlgaParserVisitor):
-    def __init__(self):
+    def __init__(self, base_dir=None):
         self.symtab = SymbolTable()
         self.errors = []
         self.decls = {}
         self.refs = {}
+        self.base_dir = base_dir
+        self.datasets = {}
 
     def _error(self, message, ctx):
         error = SemanticError(message, ctx.start.line, ctx.start.column + 1)
@@ -50,8 +54,10 @@ class SemanticVisitor(AlgaParserVisitor):
             self.visit(ctx.stmt())
             ctx = ctx.l()
 
-    # D → scalar id J ; | vector id [ num ] J ; | matrix id [ num ] [ num ] J ;
+    # D → scalar id J ; | vector id [ num ] J ; | matrix id [ num ] [ num ] J ; | auto id = E ;
     def visitD(self, ctx):
+        if ctx.TK_AUTO() is not None:
+            return self._auto(ctx)
         name = ctx.ID().getText()
         sizes = []
         valid = True
@@ -79,6 +85,20 @@ class SemanticVisitor(AlgaParserVisitor):
             self.errors.append(error)
         if actual is not None:
             self._compatible(declared, actual, ctx)
+
+    def _auto(self, ctx):
+        name = ctx.ID().getText()
+        actual = self.visit(ctx.e())
+        
+        if actual != ERROR and actual.kind not in NUMERIC:
+            actual = self._error(f"auto no puede deducir un tipo a partir de {actual}", ctx)
+            
+        try:
+            self.decls[ctx] = self.symtab.declare(
+                name, actual, ctx.start.line, ctx.start.column + 1
+            )
+        except SemanticError as error:
+            self.errors.append(error)
 
     # A → As ;
     def visitA(self, ctx):
@@ -143,6 +163,8 @@ class SemanticVisitor(AlgaParserVisitor):
     def visitF(self, ctx):
         if ctx.h() is not None:
             name = ctx.h().getText()
+            if name == "csv":
+                return self._csv(ctx)
             args = [self.visit(ctx.e())]
             tail = ctx.k()
             while tail.e() is not None:
@@ -168,6 +190,36 @@ class SemanticVisitor(AlgaParserVisitor):
         if ctx.v() is not None:
             return self.visit(ctx.v())
         return self.visit(ctx.m())
+
+    def _csv(self, ctx):
+        expressions = [ctx.e()]
+        tail = ctx.k()
+        
+        while tail.e() is not None:
+            expressions.append(tail.e())
+            tail = tail.k()
+            
+        if len(expressions) > 2:
+            return self._error("csv requiere una ruta y, opcionalmente, un separador", ctx)
+        
+        values = []
+        for expression in expressions:
+            literal = string_literal(expression)
+            
+            if literal is None:
+                return self._error("los argumentos de csv deben ser textos literales", ctx)
+            
+            values.append(decode_string(literal))
+            
+        key = (values[0], values[1] if len(values) > 1 else ",")
+        
+        try:
+            if key not in self.datasets:
+                self.datasets[key] = load_csv(self.base_dir, *key)
+        except CsvError as error:
+            return self._error(f"csv: {error}", ctx)
+        
+        return self.datasets[key].type_
 
     # V → [ N N′ ]
     def visitV(self, ctx):
